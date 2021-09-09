@@ -1,23 +1,42 @@
-import logo from './logo.svg';
+import {useMemo} from 'react'
+import Table from "./component/Table/Table";
+
 import './App.css';
 
 function App() {
+    const columns = useMemo(
+        ()=>[
+
+                    {
+                        Header:'Имя',
+                        accessor:'firstName'
+                    },
+                    {
+                        Header:'Местонахождение',
+                        accessor: 'lastName'
+                    },
+                    {
+                        Header:'Инвентарный номер',
+                        accessor: 'age'
+                    },
+                    {
+                        Header: 'IP адрес',
+                        accessor: 'visits'
+                    },
+                    {
+                        Header:'Категория',
+                        accessor: 'status'
+                    },
+        ],[])
+    const data = [
+        {firstName:'Ivan',lastName:'Ivanov',age:12,visits:true,progress:12,status:'checked'},
+        {firstName:'Ivan',lastName:'Ivanov',age:12,visits:true,progress:12,status:'checked'},
+        {firstName:'Ivan',lastName:'Ivanov',age:12,visits:true,progress:12,status:'checked'}
+        ]
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+        <h1>Hello</h1>
+        <Table columns={columns} data={data}/>
     </div>
   );
 }
