@@ -78,6 +78,7 @@ const onAddFormData =(title,addData)=>{
 }
 const onClose = ()=>{
     setModal(!isModal)
+    setIsAdd(false)
     setEditData("")
 }
     const columns = useMemo(
