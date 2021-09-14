@@ -9,7 +9,7 @@ const Category = connection.define('categories',{
         autoIncrement:true,
         allowNull:false,
     },
-    title:{
+    category_title:{
         type:DataTypes.STRING,
         allowNull:false
     }
@@ -17,5 +17,5 @@ const Category = connection.define('categories',{
     freezeTableName:true,
     timestamps:false
 })
-Category.hasOne(PC,{onDelete:"cascade"})
+Category.hasOne(PC,{foreignKey:"category",onDelete:"cascade"})
 module.exports = Category

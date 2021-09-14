@@ -1,6 +1,8 @@
 const PC = require('../model/PC');
 const Category = require('../model/Category')
 const Department = require('../model/Department')
+const IP = require('../model/Ip');
+const { apply } = require('file-loader');
 
 
 class mainController {
@@ -56,12 +58,33 @@ class mainController {
     }
     async showDepartment(req,res,next){
         try{
-            await Department.findAll()
-                .then(data=>res.json(data))
+            const arr = []
+            const getDepartent = await Department.findAll({raw:true})
+            for await ( const item of getDepartent){
+                await IP.findByPk(item.ip,{raw:true})
+                    .then(data=>{
+                        arr.push({...data,...item})
+                    })
+            }
+            return res.json(arr)
+            // getDepartent.map(async(item)=>{
+            //     await IP.findByPk(item.ip,{raw:true})
+            //     .then(data=>{
+            //         arr.push({...data,...item})
+            //     })
+            //     return res.json(arr)
+            // })
         }catch (e) {
             console.log(e)
         }
     }
+    // async AddTest(req,res,next){
+    //     try{
+    //         await IP.findAll()
+    //     }catch(e){
+
+    //     }
+    // }
 }
 
 

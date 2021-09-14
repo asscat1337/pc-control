@@ -1,8 +1,8 @@
 const {Sequelize} = require('sequelize')
 
-const {DB_PASSPORT,DB_USER,DB_HOST,DB} = process.env
+const {DB_PASSWORD,DB_USER,DB_HOST,DB} = process.env
 
-const connection = new Sequelize(DB,DB_USER,DB_PASSPORT,{
+const connection = new Sequelize(DB,DB_USER,DB_PASSWORD,{
     host:DB_HOST,
     dialect:"mysql"
 });
@@ -10,7 +10,7 @@ const connection = new Sequelize(DB,DB_USER,DB_PASSPORT,{
 async function start(){
     try{
         await connection.authenticate();
-        await connection.sync({force:true})
+        await connection.sync({alter:true})
         console.log(`Connected to db`)
     }catch (e) {
         console.log(e)

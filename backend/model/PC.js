@@ -20,18 +20,10 @@ const PC = connection.define('pc',{
         type:DataTypes.STRING,
         allowNull:false
     },
-    departments:{
-        type:DataTypes.INTEGER,
-        allowNull:false
-    },
     inventory:{
         type:DataTypes.STRING,
         allowNull:false
     },
-    category_id:{
-        type:DataTypes.INTEGER,
-        allowNull:false
-    }
 },{
     freezeTableName:true,
     timestamps:false

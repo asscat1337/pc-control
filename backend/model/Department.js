@@ -9,11 +9,7 @@ const Department = connection.define('department',{
         type:DataTypes.INTEGER,
         allowNull:false
     },
-    ip_address:{
-        type:DataTypes.STRING,
-        allowNull: false
-    },
-    title:{
+    department_title:{
         type:DataTypes.STRING,
         allowNull:false
     }

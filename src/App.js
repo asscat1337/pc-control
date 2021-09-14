@@ -95,7 +95,7 @@ const onClose = ()=>{
                     },
                     {
                         Header:'Отделение',
-                        accessor: 'departments'
+                        accessor: 'department_title'
                     },
                     {
                         Header:'Инвентарный номер',
@@ -107,7 +107,7 @@ const onClose = ()=>{
                     },
                     {
                         Header:'Категория',
-                        accessor: 'category_id'
+                        accessor: 'category_title'
                     },
                     {
                         Header:"Редактировать",

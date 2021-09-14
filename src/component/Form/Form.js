@@ -17,17 +17,18 @@ function Form({title,item,onAddData,added = false}){
        if(added===false){
            setInputs(item)
        }
-       async function fetchData(){
-           const [serviceData,departmentData] = await Promise.all([
-               axios.get('http://localhost:8080/showService'),
-               axios.get('http://localhost:8080/showDep')
-           ])
-           setSelectCat(serviceData.data)
-           setSelectDep(departmentData.data)
-       }
-       fetchData()
-    }, [item,result,ip])
-
+    }, [item,ip])
+    useEffect(() => {
+        async function fetchData(){
+            const [serviceData,departmentData] = await Promise.all([
+                axios.get('http://localhost:8080/showService'),
+                axios.get('http://localhost:8080/showDep')
+            ])
+            setSelectCat(serviceData.data)
+            setSelectDep(departmentData.data)
+        }
+        fetchData()
+    }, [])
     const onClickButton = (event)=>{
         event.preventDefault()
         if(result){
@@ -35,14 +36,28 @@ function Form({title,item,onAddData,added = false}){
         }
         onAddData(inputs)
     }
+
     const onShowScan =()=>{
         setShowScan(!showScan)
     }
+
     const handleSelect=(data)=>{
         const {value} = data.target
-        const findId = selectDep.find(item=>item.title===value)
-        if(findId){
-            setIp(findId.ip_address)
+        /// дублируется,можно переделать в ф-ию
+         const findDep = selectDep.find(item=>item.department_title===value)
+         const findCat = selectCat.find(item=>item.category_title===value)
+         ///
+        if(findDep){
+            setIp(findDep.ip_address)
+            console.log(findDep)
+            /// переделать или закинуть в state
+            const obj = {department_title:findDep.department_title,department_id:findDep.department_id}
+            //
+            setInputs(prev=>({...prev,...obj}))
+        }
+        if(findCat){
+            setInputs(prev=>({...prev,...findCat}))
+            
         }
 
     }
@@ -72,12 +87,7 @@ function Form({title,item,onAddData,added = false}){
                     value={inputs.ip || ip || ''}
                     onChange={handleInput}
             />
-            {/*<input type="text" */}
-            {/*        placeholder="Категория"*/}
-            {/*       name="pc_id"*/}
-            {/*       value={inputs.pc_id || ''}*/}
-            {/*       onChange={handleInput}/>*/}
-            {added && <CustomSelect items={selectCat} onChange={handleInput} name={"category"}/> }
+            {added && <CustomSelect items={selectCat} onChange={handleSelect} name={"category"}/> }
             {added && <CustomSelect items={selectDep} onChange={handleSelect} name={"departments"}/>}
             {added && <button onClick={onShowScan}>Показать скан</button>}
             {showScan && <QrScanner result={result} setResult={setResult}/>}
