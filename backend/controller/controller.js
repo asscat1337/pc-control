@@ -1,4 +1,6 @@
 const PC = require('../model/PC');
+const Category = require('../model/Category')
+const Department = require('../model/Department')
 
 
 class mainController {
@@ -40,6 +42,23 @@ class mainController {
                 }
             }).then(res.json({message: 'Запись удалена'}))
         } catch (e) {
+            console.log(e)
+        }
+    }
+    async showService(req,res,next){
+        try{
+            await Category.findAll().then(data=>{
+                res.json(data)
+            })
+        }catch (e) {
+            console.log(e)
+        }
+    }
+    async showDepartment(req,res,next){
+        try{
+            await Department.findAll()
+                .then(data=>res.json(data))
+        }catch (e) {
             console.log(e)
         }
     }

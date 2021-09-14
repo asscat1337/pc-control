@@ -6,8 +6,8 @@ import QrReader from 'react-qr-scanner';
 function QrScanner({result,setResult}){
     const [delay,setDelay] = useState(100)
     const previewStyle = {
-        height:240,
-        width:320
+        height:100,
+        width:100
     }
     const handleScan =(data)=>{
         if(data !==null){
@@ -24,6 +24,8 @@ function QrScanner({result,setResult}){
                 delay={delay}
                 onError={handleError}
                 onScan={handleScan}
+                facingMode={"rare"}
+                legacyMode={true}
                 />
                 <div>{result}</div>
         </>

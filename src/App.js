@@ -50,7 +50,8 @@ const onAddData = async (current)=>{
              }))
              await axios.post('http://localhost:8080/updateSubject',current)
          }else{
-             await axios.post('http://localhost:8080/addSubject',current)
+             console.log(current)
+            // await axios.post('http://localhost:8080/addSubject',current)
              setData(prev=>[...prev,current])
          }
      }catch (e) {
@@ -92,10 +93,10 @@ const onClose = ()=>{
                         Header:'Местонахождение',
                         accessor: 'destination'
                     },
-                    // {
-                    //     Header:'Отделение',
-                    //     accessor: 'otdelenie'
-                    // },
+                    {
+                        Header:'Отделение',
+                        accessor: 'departments'
+                    },
                     {
                         Header:'Инвентарный номер',
                         accessor: 'inventory'
@@ -106,23 +107,20 @@ const onClose = ()=>{
                     },
                     {
                         Header:'Категория',
-                        accessor: 'pc_id'
+                        accessor: 'category_id'
                     },
                     {
                         Header:"Редактировать",
                         Cell:({cell})=>(
+                            <>
                             <button onClick={()=>onClickEditData(cell.row.original)}>
                                 Редактировать
                             </button>
+                                <button onClick={()=>onDeleteData(cell.row.original.pc_id)}>
+                                    Удалить
+                                </button>
+                            </>
                         ),
-                    },
-                    {
-                        Header:"Удалить",
-                        Cell:({cell})=>(
-                            <button onClick={()=>onDeleteData(cell.row.original.pc_id)}>
-                                Удалить
-                            </button>
-                        )
                     }
         ],[])
   return (

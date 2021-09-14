@@ -1,7 +1,6 @@
 const {DataTypes} = require('sequelize')
 const connection = require('./config');
 
-
 const PC = connection.define('pc',{
     pc_id:{
         type:DataTypes.INTEGER,
@@ -21,6 +20,10 @@ const PC = connection.define('pc',{
         type:DataTypes.STRING,
         allowNull:false
     },
+    departments:{
+        type:DataTypes.INTEGER,
+        allowNull:false
+    },
     inventory:{
         type:DataTypes.STRING,
         allowNull:false
@@ -33,4 +36,5 @@ const PC = connection.define('pc',{
     freezeTableName:true,
     timestamps:false
 })
+
 module.exports = PC
