@@ -8,17 +8,25 @@ const { apply } = require('file-loader');
 class mainController {
     async subject(req,res,next){
         try{
-            await PC.findAll().then(data=>res.json(data))
+            const arr = []
+            await PC.findAll({raw:true})
+                .then(async (data)=>{
+                    for await(const item of data) {
+                       const categoryData =  await Category.findByPk(item.category,{raw:true})
+                       const departmentData = await Department.findByPk(item.department,{raw:true})
+                       arr.push({...categoryData,...departmentData,...item})
+                    }
+                })
+            return res.json(arr)
         }catch (e) {
             console.log(e)
         }
     }
     async addSubject(req,res,next){
         try{
-            const {description,destination,inventory,ip,pc_id} = req.body
-            await PC.create({description,destination,inventory,ip,category_id: pc_id})
+            const {description,ip,destination,inventory,department_id,category_id} = req.body
+            await PC.create({description,destination,inventory,ip,category:category_id,department:department_id})
                 .then(res.json({message:'Запись добавлена успешно'}))
-            // await PC.create()
         }catch (e) {
             console.log(e)
         }
@@ -78,13 +86,13 @@ class mainController {
             console.log(e)
         }
     }
-    // async AddTest(req,res,next){
-    //     try{
-    //         await IP.findAll()
-    //     }catch(e){
+    async LoginUser(req,res,next){
+        try{
+            res.send({'test':123})
+        }catch(e){
 
-    //     }
-    // }
+        }
+    }
 }
 
 
