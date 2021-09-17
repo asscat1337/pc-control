@@ -10,8 +10,6 @@ router.post('/updateSubject',controller.updateSubject)
 router.delete('/deleteSubject',controller.deleteSubject)
 router.get('/showService',controller.showService)
 router.get('/showDep',controller.showDepartment)
-router.get('/loginUser',controller.LoginUser)
-// router.get('/addTest',controller.AddTest)
 
 
 

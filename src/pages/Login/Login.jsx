@@ -12,7 +12,6 @@ function Login(){
 
     const onClickAuth=(event)=>{
         event.preventDefault()
-        console.log(token)
         setToken(prev=>({...prev,isAuth:!prev.isAuth}))
         history.push('/home')
     }
