@@ -1,54 +1,63 @@
 import {useTable, useSortBy, useFilters,useGlobalFilter,useAsyncDebounce} from 'react-table'
 import {Filter,DefaultColumnFilter,SelectColumnFilter} from "./Filter"
-import React,{useMemo,useState} from 'react'
+import React,{useMemo,useContext} from 'react'
+import AppContext from '../../hooks/context'
 import styles from './Table.module.scss'
 
 
-
 function Table({data,onClickEditData,onDeleteData}){
+    const {roles} = useContext(AppContext)
     const columns = useMemo(
-        ()=>[
+        ()=>{
+            const tableArray = [
 
-            {
-                Header:'Имя',
-                accessor:'description'
-            },
-            {
-                Header:'Местонахождение',
-                accessor: 'destination'
-            },
-            {
-                Header:'Отделение',
-                accessor: 'department_title',
-                Filter:SelectColumnFilter,
-                filter:'equals'
-            },
-            {
-                Header:'Инвентарный номер',
-                accessor: 'inventory'
-            },
-            {
-                Header: 'IP адрес',
-                accessor: 'ip'
-            },
-            {
-                Header:'Категория',
-                accessor: 'category_title'
-            },
-            {
-                Header:"Редактировать",
-                Cell:({cell})=>(
-                    <>
-                        <button onClick={()=>onClickEditData(cell.row.original)}>
-                            Редактировать
-                        </button>
+                {
+                    Header:'Имя',
+                    accessor:'description'
+                },
+                {
+                    Header:'Местонахождение',
+                    accessor: 'destination'
+                },
+                {
+                    Header:'Отделение',
+                    accessor: 'department_title',
+                    Filter:SelectColumnFilter,
+                    filter:'equals'
+                },
+                {
+                    Header: 'IP адрес',
+                    accessor: 'ip'
+                },
+            ]
+
+            if(roles==="admin"){
+                return [...tableArray,{
+                    Header:'Инвентарный номер',
+                    accessor: 'inventory'
+                },
+                {
+                    Header:'Категория',
+                    accessor: 'category_title'
+                },
+                {
+                    Header:"Редактировать",
+                    Cell:({cell})=>(
+                        <>
+                            <button onClick={()=>onClickEditData(cell.row.original)}>
+                                 Редактировать
+                            </button>
                         <button onClick={()=>onDeleteData(cell.row.original.pc_id)}>
-                            Удалить
-                        </button>
-                    </>
-                ),
+                                Удалить
+                            </button>
+                            </>
+                    ),
+                }]
             }
-        ],[])
+
+            return tableArray
+
+        },[])
  const {
      getTableProps,
      getTableBodyProps,

@@ -17,6 +17,10 @@ const User = connection.define('users',{
         password:{
             type:DataTypes.STRING,
             allowNull:false
+        },
+        role:{
+            type:DataTypes.STRING,
+            allowNull:true
         }
 },{
     freezeTableName:true,

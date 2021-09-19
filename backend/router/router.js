@@ -2,9 +2,9 @@ const {Router} = require('express');
 const router = Router();
 
 const controller = require('../controller/controller')
+const passport = require('../password/password')
 
-
-router.get('/getAll',controller.subject)
+router.get('/getAll',passport.authenticate('jwt',{session:false}),controller.subject)
 router.post('/addSubject',controller.addSubject)
 router.post('/updateSubject',controller.updateSubject)
 router.delete('/deleteSubject',controller.deleteSubject)

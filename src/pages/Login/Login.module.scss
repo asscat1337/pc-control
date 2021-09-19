@@ -1,5 +1,53 @@
+.loginContent{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  // margin:0 auto;
+  height: 80vh;
+}
+
 .login{
+  height: 300px;
+  width: 20em;
+  background: #fff;
+ box-shadow: 0 0 2em rgba(0,0,0,0.2);
   display: flex;
   flex-direction: column;
-  align-items: center;
+  padding: 2em;
+  border-radius: 0.25em;
+  // align-items: center;
+  input{
+    border: 0;
+    border-bottom: 1px solid black;
+    // height: 3em;
+    margin: 1.5rem 0 2rem;
+    // padding: 1em;
+  }
+  :focus{
+    outline: none;
+  }
+}
+.buttonLogin{
+  margin-top: 15px;
+  border: 0;
+  border-radius: 2px;
+  height: 3em;
+  background: #18bf52;
+  color: white;
+  cursor: pointer;
+}
+.password{
+  position: relative;
+  width: 108px;
+}
+.passwordInput{
+  width: 250px;
+}
+.passwordControl{
+  position: absolute;
+  top: 21px;
+  // right: -100px;
+  left: 270px;
+  width: 20px;
+  height: 20px;
 }

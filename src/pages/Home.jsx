@@ -15,7 +15,11 @@ function Home(){
     useEffect(()=>{
         async function fetchData(){
             const [itemResponse] = await Promise.all([
-                axios.get('http://localhost:8080/getAll')
+                axios.get('http://localhost:8080/getAll',{
+                    headers:{
+                        'Authorization':`Bearer ${sessionStorage.getItem('token')}`
+                    }
+                })
             ])
             setData(itemResponse.data)
         }

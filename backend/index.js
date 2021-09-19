@@ -13,7 +13,7 @@ app.use(express.json());
 app.use(passport.initialize())
 
 app.use('/',mainRouter)
-app.use('/login',userRouter)
+app.use('/auth',userRouter)
 
 app.listen(process.env.PORT,()=>{
     console.log(`Server started`)
