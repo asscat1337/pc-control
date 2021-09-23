@@ -9,14 +9,25 @@ class mainController {
     async subject(req, res, next) {
         try {
             const arr = []
-            await PC.findAll({raw: true})
+            let test = {}
+            await PC.findAndCountAll({
+             limit:5,
+             offset:0,
+             raw:true,
+             include:[
+                    {model:Category,as:'category'},
+                    {model:Department,as:'department'}
+                 ]
+            })
                 .then(async (data) => {
-                    for await(const item of data) {
-                        const categoryData = await Category.findByPk(item.category, {raw: true})
-                        const departmentData = await Department.findByPk(item.department, {raw: true})
-                        arr.push({...categoryData, ...departmentData, ...item})
-                    }
+                    console.log(data)
+                    // for await(const item of data.rows) {
+                    //     const categoryData = await Category.findByPk(item.category, {raw: true})
+                    //     const departmentData = await Department.findByPk(item.department, {raw: true})
+                    //     test.items = {...categoryData, ...departmentData, ...item}
+                    // }
                 })
+            console.log(test)
             return res.json(arr)
         } catch (e) {
             console.log(e)
@@ -80,13 +91,6 @@ class mainController {
                     })
             }
             return res.json(arr)
-            // getDepartent.map(async(item)=>{
-            //     await IP.findByPk(item.ip,{raw:true})
-            //     .then(data=>{
-            //         arr.push({...data,...item})
-            //     })
-            //     return res.json(arr)
-            // })
         } catch (e) {
             console.log(e)
         }

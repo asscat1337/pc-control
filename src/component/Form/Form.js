@@ -1,4 +1,4 @@
-import React, {useEffect,useState} from 'react'
+import React, {useEffect,useState,useRef} from 'react'
 import  useForm  from '../../hooks/useForm'
 import axios from "axios";
 
@@ -6,6 +6,7 @@ import CustomSelect from "../Select/Select";
 import QrScanner from "../Qr/Qr";
 
 function Form({title,item,onAddData,added = false}){
+    const nameField = useRef(null)
     const {inputs,setInputs,handleInput,handleSubmit} = useForm()
     const [selectCat,setSelectCat] = useState([])
     const [selectDep,setSelectDep] = useState([])
@@ -17,6 +18,7 @@ function Form({title,item,onAddData,added = false}){
        if(added===false){
            setInputs(item)
        }
+       console.log(result)
     }, [item,ip])
     useEffect(() => {
         async function fetchData(){
@@ -31,10 +33,9 @@ function Form({title,item,onAddData,added = false}){
     }, [])
     const onClickButton = (event)=>{
         event.preventDefault()
-        if(result){
-            setInputs(prev=>({...prev,inverntory:result}))
-        }
-        onAddData(inputs)
+        const {name,value} = nameField.current
+        // setInputs(prev=>({name:value,...prev}))
+        onAddData({[name]:value,...inputs})
     }
 
     const onShowScan =()=>{
@@ -78,7 +79,9 @@ function Form({title,item,onAddData,added = false}){
             <input type="text" 
                     placeholder="Инвентарный номер" 
                     name="inventory"
-                    value={result || inputs.inventory || ''}
+                    ref={nameField}
+                    value={result || ''}
+                    // value={result || inputs.inventory || ''}
                     onChange={handleInput}
             />
             <input type="text" 

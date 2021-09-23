@@ -9,7 +9,7 @@ import './App.css';
 
 function App() {
     const [token,setToken] = useState(sessionStorage.getItem('token'));
-    const [roles,setRoles] = useState("")
+    const [roles,setRoles] = useState(sessionStorage.getItem('role'))
 
   return (
     <div className="App">

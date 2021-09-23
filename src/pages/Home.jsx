@@ -14,6 +14,7 @@ function Home(){
 
     useEffect(()=>{
         async function fetchData(){
+            JSON.stringify(sessionStorage.getItem('token'))
             const [itemResponse] = await Promise.all([
                 axios.get('http://localhost:8080/getAll',{
                     headers:{
@@ -21,7 +22,7 @@ function Home(){
                     }
                 })
             ])
-            setData(itemResponse.data)
+            console.log(itemResponse.data)
         }
         fetchData()
     },[])
@@ -32,6 +33,7 @@ function Home(){
         setModal(true)
     }
     const onAddData = async (current)=>{
+        console.log(current)
         try{
             const findId = data.find(item=>item.pc_id===Number(current.pc_id))
             if(findId){

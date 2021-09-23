@@ -27,8 +27,9 @@ function Login(){
                 .then(response=>{
                     const {data} = response
                     sessionStorage.setItem('token',data.token)
+                    sessionStorage.setItem('role',data.role)
                     setToken(data.token)
-                    setRoles(data.role)
+                    setRoles(sessionStorage.getItem('role'))
                    history.push('/home')
                 })
                 .catch(error=>{
@@ -36,14 +37,6 @@ function Login(){
                         toast.error(error.response.data.message)
                     }
                 })
-
-            // const {data} = loginData
-            // if(data){
-            //     sessionStorage.setItem('token',data.token)
-            //     setToken(data.token)
-            //     setRoles(data.role)
-            //     // history.push('/home')
-            // }
     }
 
     return(
