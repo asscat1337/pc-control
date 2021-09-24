@@ -17,5 +17,9 @@ const Category = connection.define('categories',{
     freezeTableName:true,
     timestamps:false
 })
-Category.hasOne(PC,{foreignKey:"category",onDelete:"cascade"})
+
+Category.associate = (model)=>{
+    Category.belongsTo(model.PC,{as:'categories',foreignKey:'pc_id'})
+
+}
 module.exports = Category

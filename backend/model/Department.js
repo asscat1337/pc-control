@@ -17,5 +17,9 @@ const Department = connection.define('department',{
     freezeTableName:true,
     timestamps:false
 })
-Department.hasOne(PC,{foreignKey:"department",onDelete:"cascade"})
+Department.associate = (model)=>{
+    Department.belongsTo(model.PC,{as:'department',foreignKey:'pc_id'})
+
+}
 module.exports = Department
+    

@@ -1,6 +1,7 @@
 const {DataTypes} = require('sequelize')
 const connection = require('./config');
-
+const Category = require('./Category')
+const Department = require('./Department')
 const PC = connection.define('pc',{
     pc_id:{
         type:DataTypes.INTEGER,
@@ -24,9 +25,31 @@ const PC = connection.define('pc',{
         type:DataTypes.STRING,
         allowNull:false
     },
+    departmentId:{
+        type:DataTypes.INTEGER,
+        allowNull:false,
+        references:{
+            model:Department,
+            key:'department_id'
+        },
+        field:'department'
+    },
+    categoryId:{   
+        type:DataTypes.INTEGER,
+        allowNull:true,
+        references:{
+            model:Category,
+            key:'category_id'
+        },
+        field:'category'
+    }
 },{
     freezeTableName:true,
     timestamps:false
 })
+PC.associate = (models)=>{
+    PC.hasOne(models.Category,{foreignKey:'category_id',sourceKey:'categoryId',constraints:false})
+    PC.hasOne(models.Department,{foreignKey:'department_id',sourceKey:'departmentId',constraints:false})
+}
 
 module.exports = PC

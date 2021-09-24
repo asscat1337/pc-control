@@ -15,8 +15,7 @@ class mainController {
              offset:0,
              raw:true,
              include:[
-                    {model:Category,as:'category'},
-                    {model:Department,as:'department'}
+                   Category
                  ]
             })
                 .then(async (data) => {
