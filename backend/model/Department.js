@@ -14,12 +14,8 @@ const Department = connection.define('department',{
         allowNull:false
     }
 },{
-    freezeTableName:true,
+    tableName:'department',
     timestamps:false
 })
-Department.associate = (model)=>{
-    Department.belongsTo(model.PC,{as:'department',foreignKey:'pc_id'})
-
-}
 module.exports = Department
     

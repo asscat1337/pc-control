@@ -36,7 +36,7 @@ const PC = connection.define('pc',{
     },
     categoryId:{   
         type:DataTypes.INTEGER,
-        allowNull:true,
+        allowNull:false,
         references:{
             model:Category,
             key:'category_id'
@@ -44,12 +44,10 @@ const PC = connection.define('pc',{
         field:'category'
     }
 },{
-    freezeTableName:true,
+    tableName:'pc',
     timestamps:false
 })
-PC.associate = (models)=>{
-    PC.hasOne(models.Category,{foreignKey:'category_id',sourceKey:'categoryId',constraints:false})
-    PC.hasOne(models.Department,{foreignKey:'department_id',sourceKey:'departmentId',constraints:false})
-}
+    PC.hasMany(Category,{foreignKey:'category_id',sourceKey:'categoryId',constraints:false})
+    PC.hasMany(Department,{foreignKey:'department_id',sourceKey:'departmentId',constraints:false})
 
 module.exports = PC

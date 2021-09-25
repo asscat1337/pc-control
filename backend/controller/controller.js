@@ -8,26 +8,19 @@ const User = require('../model/User')
 class mainController {
     async subject(req, res, next) {
         try {
-            const arr = []
-            let test = {}
+            const {page,size} = req.query
+            console.log(page,size)
             await PC.findAndCountAll({
-             limit:5,
-             offset:0,
-             raw:true,
+              limit:Number(size),
+              offset: Number(page) ===1 ? 0 : Number(page)+Number(size),
              include:[
-                   Category
-                 ]
+                 {model:Category,attributes:["category_title","category_id"]},
+                 {model:Department,attributes:["department_title","department_id"]}
+             ],
             })
                 .then(async (data) => {
-                    console.log(data)
-                    // for await(const item of data.rows) {
-                    //     const categoryData = await Category.findByPk(item.category, {raw: true})
-                    //     const departmentData = await Department.findByPk(item.department, {raw: true})
-                    //     test.items = {...categoryData, ...departmentData, ...item}
-                    // }
+                    return res.json(data)
                 })
-            console.log(test)
-            return res.json(arr)
         } catch (e) {
             console.log(e)
         }

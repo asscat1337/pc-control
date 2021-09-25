@@ -1,4 +1,4 @@
-import {useEffect,useState} from "react"
+import {useEffect,useState,useCallback} from "react"
 
 import Modal from "../component/modal/Modal";
 import Form from "../component/Form/Form";
@@ -11,6 +11,7 @@ function Home(){
     const [isAdd,setIsAdd]= useState(false)
     const [editData,setEditData] = useState({})
     const [data,setData] = useState([]);
+    // const [pageCount,setPageCount] = useState()
 
     useEffect(()=>{
         async function fetchData(){
@@ -22,7 +23,8 @@ function Home(){
                     }
                 })
             ])
-            console.log(itemResponse.data)
+            setData(itemResponse.data.rows)
+            // setPageCount(data.count)
         }
         fetchData()
     },[])
@@ -98,7 +100,8 @@ function Home(){
         <Table
             onClickEditData={onClickEditData}
             onDeleteData={onDeleteData}
-            data={data}/>
+            data={data}
+        />
     </div>
     )
 }

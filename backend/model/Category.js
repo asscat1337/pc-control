@@ -1,7 +1,6 @@
 const {DataTypes} = require('sequelize')
 const connection = require('./config');
-const PC = require('./PC');
-
+const PC = require('./PC')
 const Category = connection.define('categories',{
     category_id:{
         primaryKey:true,
@@ -14,12 +13,7 @@ const Category = connection.define('categories',{
         allowNull:false
     }
 },{
-    freezeTableName:true,
+    tableName:'categories',
     timestamps:false
 })
-
-Category.associate = (model)=>{
-    Category.belongsTo(model.PC,{as:'categories',foreignKey:'pc_id'})
-
-}
 module.exports = Category

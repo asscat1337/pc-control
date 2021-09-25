@@ -22,7 +22,7 @@ function Table({data,onClickEditData,onDeleteData}){
                 },
                 {
                     Header:'Отделение',
-                    accessor: 'department_title',
+                    accessor: 'departments[0].department_title',
                     Filter:SelectColumnFilter,
                     filter:'equals'
                 },
@@ -39,7 +39,7 @@ function Table({data,onClickEditData,onDeleteData}){
                 },
                 {
                     Header:'Категория',
-                    accessor: 'category_title'
+                    accessor: 'categories[0].category_title'
                 },
                 {
                     Header:"Редактировать",
@@ -63,10 +63,8 @@ function Table({data,onClickEditData,onDeleteData}){
      getTableProps,
      getTableBodyProps,
      headerGroups,
-     rows,
      page,
      prepareRow,
-     visibleColumns,
      canPreviousPage,
      canNextPage,
      pageOptions,
@@ -81,7 +79,7 @@ function Table({data,onClickEditData,onDeleteData}){
          columns,
          data,
          defaultColumn:{Filter:DefaultColumnFilter},
-         initialState:{pageIndex:0,pageSize:10}
+         initialState:{pageIndex:0,pageSize:10},
      },
      useFilters,
      useGlobalFilter,
