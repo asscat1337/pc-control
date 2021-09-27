@@ -12,14 +12,14 @@ class mainController {
             console.log(page,size)
             await PC.findAndCountAll({
               limit:Number(size),
-              offset: Number(page) ===1 ? 0 : Number(page)+Number(size),
+              offset: Number(page),
              include:[
                  {model:Category,attributes:["category_title","category_id"]},
                  {model:Department,attributes:["department_title","department_id"]}
              ],
             })
-                .then(async (data) => {
-                    return res.json(data)
+                .then((data) => {
+                    res.status(200).send(data)
                 })
         } catch (e) {
             console.log(e)

@@ -1,8 +1,10 @@
-import {useEffect,useState,useCallback} from "react"
+import {useState,useRef,useCallback} from "react"
+import AppContext from "../hooks/context";
 
 import Modal from "../component/modal/Modal";
 import Form from "../component/Form/Form";
 import Table from "../component/Table/Table";
+import QrScanner from "../component/Qr/Qr";
 import axios from "axios";
 
 function Home(){
@@ -10,24 +12,45 @@ function Home(){
     const [title,setTitle] = useState("");
     const [isAdd,setIsAdd]= useState(false)
     const [editData,setEditData] = useState({})
-    const [data,setData] = useState([]);
-    // const [pageCount,setPageCount] = useState()
+    const [modalVariant,setModalVariant] = useState("")
 
-    useEffect(()=>{
-        async function fetchData(){
-            JSON.stringify(sessionStorage.getItem('token'))
+    const [data,setData] = useState([]);
+    const fetchIdRef = useRef(0)
+    const [loading,setIsLoading] = useState(false)
+    ///
+    const [pageCount,setPageCount] = useState(0)
+    ///
+    const fetchAPIData = async({page,size})=>{
+        try{
+            setIsLoading(true)
             const [itemResponse] = await Promise.all([
-                axios.get('http://localhost:8080/getAll',{
+                axios.get(`http://localhost:8080/getAll?page=${page}&size=${size}`,{
                     headers:{
                         'Authorization':`Bearer ${sessionStorage.getItem('token')}`
                     }
                 })
             ])
             setData(itemResponse.data.rows)
-            // setPageCount(data.count)
+            const pages = Math.ceil(itemResponse.data.count / size)
+            setPageCount(pages)
+            setIsLoading(false)
+        }catch(e){
+            console.log(e)
         }
-        fetchData()
-    },[])
+    }
+    const fetchData = useCallback(
+        ({ pageSize, pageIndex }) => {
+          const fetchId = ++fetchIdRef.current;
+          setIsLoading(true)
+          if (fetchId === fetchIdRef.current) {
+            fetchAPIData({
+              size:pageSize,
+              page:pageIndex*pageSize,
+            });
+          }
+        },
+        []
+      );    
 
     const onClickEditData = (id)=>{
         setTitle("Редактировать")
@@ -77,30 +100,48 @@ function Home(){
             console.log(e)
         }
     }
-    const onAddFormData =(title,addData)=>{
+    const onAddFormData =(title,addData,variant)=>{
         setTitle(title)
         setIsAdd(addData)
         setModal(true)
+        setModalVariant(variant)
     }
     const onClose = ()=>{
         setModal(!isModal)
         setIsAdd(false)
         setEditData("")
     }
-
+    const onFindElem = (variant)=>{
+        setModal(true)
+        setModalVariant(variant)
+    }
+    const getModal = ()=>{
+        switch(modalVariant){
+            case "add":
+                return  <Form title={title} item={editData} onAddData={(data)=>onAddData(data)} added={isAdd}/>
+            case "find":
+                return <QrScanner/>
+            default:
+                return <div></div>
+            }
+    }
 
     return(
     <div>
         <h1>Учет ПК</h1>
-        <button onClick={()=>onAddFormData('Добавить',true)}>Добавить предмет</button>
+        <button onClick={()=>onAddFormData('Добавить',true,"add")}>Добавить предмет</button>
+        <button onClick={()=>onFindElem("find")}>Найти предмет</button>
         <Modal visible={isModal} title='Заголовок' footer={<button onClick={onClose}>Закрыть</button>} onClose={onClose}>
-            <Form title={title} item={editData} onAddData={(data)=>onAddData(data)} added={isAdd}/>
+           {getModal()}
         </Modal>
 
         <Table
             onClickEditData={onClickEditData}
             onDeleteData={onDeleteData}
             data={data}
+            loading={loading}
+            pageCount={pageCount}
+            fetchData={fetchData}
         />
     </div>
     )

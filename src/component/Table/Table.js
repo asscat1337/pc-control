@@ -1,12 +1,18 @@
 import {useTable, useSortBy, useFilters,useGlobalFilter,usePagination} from 'react-table'
 import {Filter,DefaultColumnFilter,SelectColumnFilter} from "./Filter"
-import React,{useMemo,useContext} from 'react'
+import React,{useMemo,useContext,useEffect} from 'react'
 import AppContext from '../../hooks/context'
 import styles from './Table.module.scss'
-import {number} from "react-table/src/sortTypes";
 
 
-function Table({data,onClickEditData,onDeleteData}){
+function Table({
+    onClickEditData,
+    onDeleteData,
+    data,
+    loading,
+    pageCount:controlledPageCount,
+    fetchData
+}){
     const {roles} = useContext(AppContext)
     const columns = useMemo(
         ()=>{
@@ -79,13 +85,19 @@ function Table({data,onClickEditData,onDeleteData}){
          columns,
          data,
          defaultColumn:{Filter:DefaultColumnFilter},
-         initialState:{pageIndex:0,pageSize:10},
+         initialState:{pageIndex:0,pageSize:5},
+         manualPagination:true,
+         autoResetPage:false,
+         pageCount:controlledPageCount
      },
      useFilters,
      useGlobalFilter,
      useSortBy,
      usePagination)
 
+    useEffect(() => {
+    fetchData({ pageIndex, pageSize })
+  }, [fetchData, pageIndex, pageSize])
 
     const generateSortingIndicator = (column)=>{
         return column.isSorted
@@ -94,7 +106,6 @@ function Table({data,onClickEditData,onDeleteData}){
                 : ' 🔼'
             : ''
     }
-
     return (
         <>
         <table {...getTableProps()}>
@@ -115,16 +126,21 @@ function Table({data,onClickEditData,onDeleteData}){
             }
             </thead>
             <tbody {...getTableBodyProps()}>
-            {page.map((row)=>{
-                prepareRow(row)
-                    return (
-                        <tr {...row.getRowProps()}>
-                            {row.cells.map(cell=>{
-                                return <td {...cell.getCellProps()}> {cell.render('Cell')}</td>
-                            })}
-                        </tr>
-                    )
-                })
+                {loading ? 
+                <tr>
+                    <td colSpan="10">Загрузка...</td>
+                </tr> 
+                :
+                page.map((row)=>{
+                    prepareRow(row)
+                        return (
+                            <tr {...row.getRowProps()}>
+                                {row.cells.map(cell=>{
+                                    return <td {...cell.getCellProps()}> {cell.render('Cell')}</td>
+                                })}
+                            </tr>
+                        )
+                    })
             }
             </tbody>
         </table>
@@ -135,8 +151,8 @@ function Table({data,onClickEditData,onDeleteData}){
                 <button onClick={()=>previousPage()} disabled={!canPreviousPage}>
                     {'<'}
                 </button>
-                <button onClick={()=>nextPage()} disabled={!canNextPage}>
-                    {'>'}
+                <button onClick={() => nextPage()} disabled={!canNextPage}>
+          {'>'}
                 </button>
                 <button onClick={()=>gotoPage(pageCount-1)} disabled={!canNextPage}>
                     {'>>'}
@@ -162,7 +178,7 @@ function Table({data,onClickEditData,onDeleteData}){
                         setPageSize(Number(e.target.value))
                     }}
                 >
-                    {[10,20,30,40,50].map(pageSize=>(
+                    {[5,10,20,30,40,50].map(pageSize=>(
                         <option key={pageSize} value={pageSize}>
                             show {pageSize}
                         </option>
