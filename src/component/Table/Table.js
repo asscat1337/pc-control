@@ -1,70 +1,18 @@
-import {useTable, useSortBy, useFilters,useGlobalFilter,usePagination} from 'react-table'
+import {useTable, useSortBy, useFilters,useGlobalFilter,usePagination,useExpanded} from 'react-table'
 import {Filter,DefaultColumnFilter,SelectColumnFilter} from "./Filter"
-import React,{useMemo,useContext,useEffect} from 'react'
-import AppContext from '../../hooks/context'
-import styles from './Table.module.scss'
+import React,{useEffect,Fragment,useState} from 'react'
+import styles from './Table.scss'
 
 
 function Table({
-    onClickEditData,
-    onDeleteData,
     data,
     loading,
     pageCount:controlledPageCount,
-    fetchData
+    fetchData,
+    columns,
+    showHistory,
+    history
 }){
-    const {roles} = useContext(AppContext)
-    const columns = useMemo(
-        ()=>{
-            const tableArray = [
-
-                {
-                    Header:'Имя',
-                    accessor:'description'
-                },
-                {
-                    Header:'Местонахождение',
-                    accessor: 'destination'
-                },
-                {
-                    Header:'Отделение',
-                    accessor: 'departments[0].department_title',
-                    Filter:SelectColumnFilter,
-                    filter:'equals'
-                },
-                {
-                    Header: 'IP адрес',
-                    accessor: 'ip'
-                },
-            ]
-
-            if(roles==="admin"){
-                return [...tableArray,{
-                    Header:'Инвентарный номер',
-                    accessor: 'inventory'
-                },
-                {
-                    Header:'Категория',
-                    accessor: 'categories[0].category_title'
-                },
-                {
-                    Header:"Редактировать",
-                    Cell:({cell})=>(
-                        <>
-                            <button onClick={()=>onClickEditData(cell.row.original)}>
-                                 Редактировать
-                            </button>
-                        <button onClick={()=>onDeleteData(cell.row.original.pc_id)}>
-                                Удалить
-                            </button>
-                            </>
-                    ),
-                }]
-            }
-
-            return tableArray
-
-        },[])
  const {
      getTableProps,
      getTableBodyProps,
@@ -79,7 +27,8 @@ function Table({
      nextPage,
      previousPage,
      setPageSize,
-     state:{pageIndex,pageSize}
+     visibleColumns,
+     state:{pageIndex,pageSize,expanded}
  } = useTable(
      {
          columns,
@@ -93,11 +42,12 @@ function Table({
      useFilters,
      useGlobalFilter,
      useSortBy,
+     useExpanded,
      usePagination)
-
     useEffect(() => {
     fetchData({ pageIndex, pageSize })
   }, [fetchData, pageIndex, pageSize])
+
 
     const generateSortingIndicator = (column)=>{
         return column.isSorted
@@ -106,9 +56,10 @@ function Table({
                 : ' 🔼'
             : ''
     }
+
     return (
         <>
-        <table {...getTableProps()}>
+        <table {...getTableProps()} id="customers">
             <thead>
             {headerGroups.map((headerGroup)=>(
                 <tr {...headerGroup.getHeaderGroupProps()}>
@@ -132,13 +83,21 @@ function Table({
                 </tr> 
                 :
                 page.map((row)=>{
-                    prepareRow(row)
+                    prepareRow(row);
+                    const rowProps = row.getRowProps()
                         return (
-                            <tr {...row.getRowProps()}>
-                                {row.cells.map(cell=>{
-                                    return <td {...cell.getCellProps()}> {cell.render('Cell')}</td>
-                                })}
-                            </tr>
+                             <Fragment key={rowProps.key}>
+                                <tr>
+                                    {row.cells.map(cell=>{
+                                        return <td {...cell.getCellProps()}> {cell.render('Cell')}</td>
+                                    })}
+                                </tr>
+                                     {row.isExpanded &&
+                                         <tr>
+                                             <td colSpan="1000">{showHistory({row,rowProps,visibleColumns})}</td>
+                                         </tr>
+                                     }
+                            </Fragment>
                         )
                     })
             }

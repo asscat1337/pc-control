@@ -19,6 +19,6 @@ const IP = connection.define('ip',{
     timestamps:false
 })
 
-IP.hasOne(Department,{foreignKey:"ip",onDelete:"cascade"})
+IP.hasOne(Department,{foreignKey:"ip_id",onDelete:"cascade"})
 
 module.exports = IP

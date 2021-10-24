@@ -2,7 +2,8 @@ const PC = require('../model/PC');
 const Category = require('../model/Category')
 const Department = require('../model/Department')
 const IP = require('../model/Ip');
-const User = require('../model/User')
+const History = require('../model/History')
+const Comments = require('../model/Comments')
 
 
 class mainController {
@@ -16,10 +17,25 @@ class mainController {
              include:[
                  {model:Category,attributes:["category_title","category_id"]},
                  {model:Department,attributes:["department_title","department_id"]}
-             ],
+             ]
             })
                 .then((data) => {
-                    res.status(200).send(data)
+                    const mappedData = data.rows.map(item=>{
+                        const obj =  {
+                            pc_id:item.pc_id,
+                            description:item.description,
+                            ip:item.ip,
+                            inventory:item.inventory,
+                            destination:item.destination,
+                            departmentId:item.departmentId,
+                            categoryId: item.categoryId,
+                            author:item.author
+                        }
+                         const {category_title} = item.categories[0];
+                         const {department_title} = item.departments[0]
+                         return {...obj,category_title,department_title}
+                    })
+                    res.status(200).send({count:data.count,rows:mappedData})
                 })
         } catch (e) {
             console.log(e)
@@ -28,9 +44,10 @@ class mainController {
 
     async addSubject(req, res, next) {
         try {
+            console.log(req.body)
             const {description, ip, destination, inventory, department_id, category_id} = req.body
-            await PC.create({description, destination, inventory, ip, category: category_id, department: department_id})
-                .then(res.json({message: 'Запись добавлена успешно'}))
+            await PC.create({description, destination, inventory, ip, categoryId: category_id, departmentId: department_id})
+                .then(data=>res.json({message: 'Запись добавлена успешно',data}))
         } catch (e) {
             console.log(e)
         }
@@ -38,8 +55,8 @@ class mainController {
 
     async updateSubject(req, res, next) {
         try {
-            const {description, destination, inventory, ip, pc_id, category_id} = req.body
-            await PC.update({description, destination, inventory, ip, category_id}, {
+            const {description, destination, inventory, ip, pc_id,department_id} = req.body
+            await PC.update({description, destination, inventory, ip,departmentId:department_id}, {
                 where: {
                     pc_id
                 }
@@ -77,13 +94,52 @@ class mainController {
             const arr = []
             const getDepartent = await Department.findAll({raw: true})
             for await (const item of getDepartent) {
-                await IP.findByPk(item.ip, {raw: true})
+                await IP.findByPk(item.ip_id, {raw: true})
                     .then(data => {
                         arr.push({...data, ...item})
                     })
             }
             return res.json(arr)
         } catch (e) {
+            console.log(e)
+        }
+    }
+    async showEditDepartment(req,res,next){
+        try{
+            await Department.findAll()
+                .then(data=>res.json(data))
+        }catch (e) {
+            console.log(e)
+        }
+    }
+    async addHistoryMoving(req,res,next){
+        try{
+            const {destination,department_title,pc_id} = req.body
+            await History.create({previous:destination,department:department_title,pcId:pc_id})
+                .then(res.json({'message':'123'}))
+
+        }catch (e) {
+            console.log(e)
+        }
+    }
+    async showHistory(req,res,next){
+        try{
+            await History.findAll({where:{pcId:req.params.id}})
+                .then(data=>res.json(data))
+        }catch (e) {
+            console.log(e)
+        }
+    }
+    async showComment(req,res,next){
+        try{
+            const {id} = req.params
+            await Comments.findAll({
+                where: {
+                    pcId:id
+                    }
+            })
+                .then(data=>res.json(data))
+        }catch (e) {
             console.log(e)
         }
     }

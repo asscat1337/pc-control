@@ -12,13 +12,12 @@ function Form({title,item,onAddData,added = false}){
     const [selectDep,setSelectDep] = useState([])
     const [showScan,setShowScan] = useState(false)
     const [result,setResult] = useState("");
-    const [ip,setIp]= useState("")
+    const [ip,setIp]= useState("");
 
     useEffect(() => {
        if(added===false){
            setInputs(item)
        }
-       console.log(result)
     }, [item,ip])
     useEffect(() => {
         async function fetchData(){
@@ -34,7 +33,6 @@ function Form({title,item,onAddData,added = false}){
     const onClickButton = (event)=>{
         event.preventDefault()
         const {name,value} = nameField.current
-        // setInputs(prev=>({name:value,...prev}))
         onAddData({[name]:value,...inputs})
     }
 
@@ -50,15 +48,13 @@ function Form({title,item,onAddData,added = false}){
          ///
         if(findDep){
             setIp(findDep.ip_address)
-            console.log(findDep)
             /// переделать или закинуть в state
             const obj = {department_title:findDep.department_title,department_id:findDep.department_id}
             //
-            setInputs(prev=>({...prev,...obj}))
+            setInputs(prev=>({...prev,...findDep}))
         }
         if(findCat){
             setInputs(prev=>({...prev,...findCat}))
-            
         }
 
     }
@@ -80,7 +76,7 @@ function Form({title,item,onAddData,added = false}){
                     placeholder="Инвентарный номер" 
                     name="inventory"
                     ref={nameField}
-                    value={result || ''}
+                    value={result || inputs.inventory || '' }
                     // value={result || inputs.inventory || ''}
                     onChange={handleInput}
             />
@@ -90,8 +86,8 @@ function Form({title,item,onAddData,added = false}){
                     value={inputs.ip || ip || ''}
                     onChange={handleInput}
             />
-            {added && <CustomSelect items={selectCat} onChange={handleSelect} name={"category"}/> }
-            {added && <CustomSelect items={selectDep} onChange={handleSelect} name={"departments"}/>}
+            {added && <CustomSelect items={selectCat} onChange={handleSelect} name={"category"}/>}
+            <CustomSelect items={selectDep} onChange={handleSelect} name={"departments"}/>
             {added && <button onClick={onShowScan}>Показать скан</button>}
             {showScan && <QrScanner result={result} setResult={setResult}/>}
             <button onClick={onClickButton}>{title}</button>

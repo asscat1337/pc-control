@@ -10,6 +10,10 @@ router.post('/updateSubject',controller.updateSubject)
 router.delete('/deleteSubject',controller.deleteSubject)
 router.get('/showService',controller.showService)
 router.get('/showDep',controller.showDepartment)
+router.get('/showDepartment',controller.showEditDepartment)
+router.post('/addHistoryMoving',controller.addHistoryMoving)
+router.get('/showHistory/:id',controller.showHistory)
+router.get('/showComments/:id',controller.showComment)
 
 
 

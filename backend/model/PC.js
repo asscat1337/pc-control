@@ -42,6 +42,10 @@ const PC = connection.define('pc',{
             key:'category_id'
         },
         field:'category'
+    },
+    author:{
+        type:DataTypes.TEXT,
+        allowNull:false,
     }
 },{
     tableName:'pc',

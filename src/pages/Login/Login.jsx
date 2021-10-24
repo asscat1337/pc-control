@@ -26,10 +26,11 @@ function Login(){
             loginData
                 .then(response=>{
                     const {data} = response
+                    console.log(data)
                     sessionStorage.setItem('token',data.token)
-                    sessionStorage.setItem('role',data.role)
+                    sessionStorage.setItem('role',JSON.stringify({"login":data.login,"role":data.role}))
                     setToken(data.token)
-                    setRoles(sessionStorage.getItem('role'))
+                    setRoles(JSON.stringify({"login":data.login,"role":data.role}))
                    history.push('/home')
                 })
                 .catch(error=>{
