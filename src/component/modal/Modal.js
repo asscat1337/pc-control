@@ -15,7 +15,9 @@ function Modal({
      switch(key){
          case 'Escape':
              onClose()
-        break     
+        break;
+         default:
+             break
      }
  }
  useEffect(()=>{

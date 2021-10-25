@@ -1,5 +1,4 @@
-import React, {useMemo, useState} from "react"
-import {useAsyncDebounce} from "react-table";
+import React, {useMemo} from "react"
 
 export const Filter = ({ column }) => {
     return (

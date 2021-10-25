@@ -22,6 +22,14 @@ const Comments = sequelize.define('comments',{
             model:'PC',
             key:'pc_id'
         }
+    },
+    nickname:{
+        type:DataTypes.TEXT,
+        allowNull:false
+    },
+    added:{
+        type:DataTypes.DATE,
+        allowNull:false
     }
 },{
     timestamps:false,

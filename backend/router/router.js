@@ -14,6 +14,7 @@ router.get('/showDepartment',controller.showEditDepartment)
 router.post('/addHistoryMoving',controller.addHistoryMoving)
 router.get('/showHistory/:id',controller.showHistory)
 router.get('/showComments/:id',controller.showComment)
+router.post('/addComment',controller.addComment)
 
 
 

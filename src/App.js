@@ -1,9 +1,8 @@
-import React, {useState,useCallback,useRef} from 'react'
+import React, {useState} from 'react'
 import {Route,Switch,Redirect} from "react-router-dom"
 import AppContext from "./hooks/context";
-import axios from 'axios';
 
-import Home from "./pages/Home";
+import Home from "./pages/Home/Home";
 import Login from "./pages/Login/Login"
 
 import './App.css';

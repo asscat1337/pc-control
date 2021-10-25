@@ -4,6 +4,8 @@ const Department = require('../model/Department')
 const IP = require('../model/Ip');
 const History = require('../model/History')
 const Comments = require('../model/Comments')
+const dayjs = require('dayjs')
+
 
 
 class mainController {
@@ -139,6 +141,15 @@ class mainController {
                     }
             })
                 .then(data=>res.json(data))
+        }catch (e) {
+            console.log(e)
+        }
+    }
+    async addComment(req,res,next){
+        try{
+            const {pcId,title,nickname,added} = req.body
+           await Comments.create({title,pcId,nickname,added:dayjs(added).format()})
+               .then(res.json({'message':'OK'}))
         }catch (e) {
             console.log(e)
         }

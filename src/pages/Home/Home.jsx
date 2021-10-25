@@ -1,15 +1,16 @@
 import React, {useState, useRef, useCallback,useEffect,useContext, useMemo} from "react"
-import AppContext from "../hooks/context";
+import AppContext from "../../hooks/context";
+import styles from './Home.module.scss'
 
-import Modal from "../component/modal/Modal";
-import Form from "../component/Form/Form";
-import EditForm from "../component/Form/EditForm";
-import Table from "../component/Table/Table";
-import SubRows from "../component/Table/SubRows";
-import Comments from "../component/Table/Comments";
-import QrScanner from "../component/Qr/Qr";
+
+import Modal from "../../component/modal/Modal";
+import Form from "../../component/Form/Form";
+import EditForm from "../../component/Form/EditForm";
+import Table from "../../component/Table/Table";
+import QrScanner from "../../component/Qr/Qr";
+import Info from "../../component/Info/Info";
 import axios from "axios";
-import {SelectColumnFilter} from "../component/Table/Filter";
+import {SelectColumnFilter} from "../../component/Table/Filter";
 
 function Home(){
     const [isModal,setModal] = useState(false)
@@ -21,6 +22,8 @@ function Home(){
     const [data,setData] = useState([]);
     const fetchIdRef = useRef(0)
     const [loading,setIsLoading] = useState(false)
+    const [open,setOpen] = useState(false)
+    const [currentRow,setCurrentRow] = useState(null)
     ///
     const [pageCount,setPageCount] = useState(0)
     ///
@@ -55,9 +58,9 @@ function Home(){
                     Header: ()=>null,
                     id:'expander',
                     Cell: ({ row }) =>(
-                        <span {...row.getToggleRowExpandedProps()}>
-                            {row.isExpanded ? '👇' : '👉'}
-                        </span>
+                        <button onClick={()=>ClickInfo(row.original.pc_id)}>
+                            Нажми на меня
+                        </button>
 
                     ),
                     SubCell:()=>null
@@ -65,9 +68,6 @@ function Home(){
                 {
                     Header:'Имя',
                     accessor:(d)=>d.description,
-                    SubCell:(cellProps)=>(
-                        <>{cellProps.value}</>
-        )
                 },
                 {
                     Header:'Местонахождение',
@@ -147,7 +147,10 @@ function Home(){
         },
         []
       );
-
+    const ClickInfo=(id)=>{
+        setOpen(!open)
+        setCurrentRow(id)
+    }
     const onClickEditData = (variant,id)=>{
         setTitle("Редактировать")
         setEditData(id)
@@ -156,7 +159,6 @@ function Home(){
     }
     const onAddData = async (current)=>{
         try{
-            console.log(current)
             const findId = data.find(item=>item.pc_id===Number(current.pc_id))
             if(findId){
                 setData(prev=>prev.map((item)=>{
@@ -199,53 +201,52 @@ function Home(){
             console.log(e)
         }
     }
-    const SubRowsAsync=({row,rowProps,visibleColumns})=>{
-        const [loading,setLoading] = useState(true);
-        const [dataHistory,setDataHistory] = useState([])
-        const [comments,setComments] = useState([])
-
-        useEffect(()=>{
-            async function fetchData() {
-                const {pc_id} = row.original
-                const [History,Comment] = await Promise.all([
-                    axios.get(`http://localhost:8080/showHistory/${pc_id}`),
-                    axios.get(`http://localhost:8080/showComments/${pc_id}`)
-                ])
-
-                setDataHistory(History.data)
-                setComments(Comment.data)
-                setLoading(false)
-                console.log(comments)
-            }
-            fetchData()
-        },[])
-
-        return(
-            <>
-            <SubRows
-                row={row}
-                rowProps={rowProps}
-                visibleColumns={visibleColumns}
-                data={dataHistory}
-                loading={loading}
-            />
-            <Comments
-                data={comments}
-                row={row}
-                rowProps={rowProps}
-                visibleColumns={visibleColumns}
-                loading={loading}
-            />
-            </>
-        )
-    }
-    const showHistory = useCallback(({row,rowProps,visibleColumns})=>(
-         <SubRowsAsync
-            row={row}
-            rowProps={rowProps}
-            visibleColumns={visibleColumns}
-         />
-    ),[])
+    // const SubRowsAsync=({row,rowProps,visibleColumns})=>{
+    //     const [loading,setLoading] = useState(true);
+    //     const [dataHistory,setDataHistory] = useState([])
+    //     const [comments,setComments] = useState([])
+    //
+    //     // useEffect(()=>{
+    //     //     async function fetchData() {
+    //     //         const {pc_id} = row.original
+    //     //         const [History,Comment] = await Promise.all([
+    //     //             axios.get(`http://localhost:8080/showHistory/${pc_id}`),
+    //     //             axios.get(`http://localhost:8080/showComments/${pc_id}`)
+    //     //         ])
+    //     //
+    //     //         setDataHistory(History.data)
+    //     //         setComments(Comment.data)
+    //     //         setLoading(false)
+    //     //     }
+    //     //     fetchData()
+    //     // },[])
+    //
+    //     return(
+    //         <>
+    //         {/*<SubRows*/}
+    //         {/*    row={row}*/}
+    //         {/*    rowProps={rowProps}*/}
+    //         {/*    visibleColumns={visibleColumns}*/}
+    //         {/*    data={dataHistory}*/}
+    //         {/*    loading={loading}*/}
+    //         {/*/>*/}
+    //         {/*<Comments*/}
+    //         {/*    data={comments}*/}
+    //         {/*    row={row}*/}
+    //         {/*    rowProps={rowProps}*/}
+    //         {/*    visibleColumns={visibleColumns}*/}
+    //         {/*    loading={loading}*/}
+    //         {/*/>*/}
+    //         </>
+    //     )
+    // }
+    // const showHistory = useCallback(({row,rowProps,visibleColumns})=>(
+    //      <SubRowsAsync
+    //         row={row}
+    //         rowProps={rowProps}
+    //         visibleColumns={visibleColumns}
+    //      />
+    // ),[])
     const onAddFormData =(title,addData,variant)=>{
         setTitle(title)
         setIsAdd(addData)
@@ -270,21 +271,26 @@ function Home(){
     }
 
     return(
-    <div>
+    <div className={ `${open ? styles.opened : ''}`}>
         <h1>Учет ПК</h1>
         <button onClick={()=>onAddFormData('Добавить',true,"add")}>Добавить предмет</button>
         <button onClick={()=>onFindElem("find")}>Найти предмет</button>
         <Modal visible={isModal} title='Заголовок' footer={<button onClick={onClose}>Закрыть</button>} onClose={onClose}>
            {getModal()}
         </Modal>
-
+        {open &&
+        <Info
+            row={currentRow}
+            open={open}
+            setOpen={setOpen}
+        />
+        }
         <Table
             data={data}
             loading={loading}
             pageCount={pageCount}
             fetchData={fetchData}
             columns={columns}
-            showHistory={showHistory}
         />
     </div>
     )

@@ -2,7 +2,6 @@ import {useMemo} from 'react'
 import {useTable} from "react-table";
 
 function Comments({data}){
-    console.log(data)
     const columns = useMemo(
         ()=>[
             {

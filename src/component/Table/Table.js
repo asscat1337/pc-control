@@ -1,6 +1,6 @@
 import {useTable, useSortBy, useFilters,useGlobalFilter,usePagination,useExpanded} from 'react-table'
-import {Filter,DefaultColumnFilter,SelectColumnFilter} from "./Filter"
-import React,{useEffect,Fragment,useState} from 'react'
+import {Filter,DefaultColumnFilter} from "./Filter"
+import React,{useEffect,Fragment} from 'react'
 import styles from './Table.scss'
 
 
