@@ -124,23 +124,17 @@ class mainController {
             console.log(e)
         }
     }
-    async showHistory(req,res,next){
-        try{
-            await History.findAll({where:{pcId:req.params.id}})
-                .then(data=>res.json(data))
-        }catch (e) {
-            console.log(e)
-        }
-    }
-    async showComment(req,res,next){
+    async showDetails(req,res,next){
         try{
             const {id} = req.params
-            await Comments.findAll({
+            console.log(req.params.id)
+            const getHistory = await History.findAll({where:{pcId:id}})
+            const getComments = await Comments.findAll({
                 where: {
                     pcId:id
-                    }
+                }
             })
-                .then(data=>res.json(data))
+            return res.json({comment:getComments,history:getHistory})
         }catch (e) {
             console.log(e)
         }
@@ -150,6 +144,15 @@ class mainController {
             const {pcId,title,nickname,added} = req.body
            await Comments.create({title,pcId,nickname,added:dayjs(added).format()})
                .then(res.json({'message':'OK'}))
+        }catch (e) {
+            console.log(e)
+        }
+    }
+    async deleteComment(req,res,next){
+        try{
+            const {id} = req.body;
+            await Comments.destroy({where:{comment_id:id}})
+                .then(res.json({'message':'Комментарий удален'}))
         }catch (e) {
             console.log(e)
         }

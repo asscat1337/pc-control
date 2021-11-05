@@ -1,5 +1,6 @@
 import React, {useState, useRef, useCallback,useEffect,useContext, useMemo} from "react"
 import AppContext from "../../hooks/context";
+import {SelectColumnFilter} from "../../component/Table/Filter";
 import styles from './Home.module.scss'
 
 
@@ -10,7 +11,6 @@ import Table from "../../component/Table/Table";
 import QrScanner from "../../component/Qr/Qr";
 import Info from "../../component/Info/Info";
 import axios from "axios";
-import {SelectColumnFilter} from "../../component/Table/Filter";
 
 function Home(){
     const [isModal,setModal] = useState(false)

@@ -16,11 +16,14 @@ function App() {
     <div className="App">
         <AppContext.Provider value={{setToken,token,roles,setRoles}}>
             <Switch>
-                <Route path="/home" exact>
-                    {!token ? <Redirect to="/login"/>:<Home/>}
+                <Route path="/" exact>
+                    {!token ? <Redirect to="/login"/>:<Redirect to="/home"/>}
                 </Route>
                 <Route path="/login" exact>
                     <Login/>
+                </Route>
+                <Route path="/home" exact>
+                    <Home/>
                 </Route>
             </Switch>
         </AppContext.Provider>

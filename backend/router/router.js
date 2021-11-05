@@ -12,9 +12,9 @@ router.get('/showService',controller.showService)
 router.get('/showDep',controller.showDepartment)
 router.get('/showDepartment',controller.showEditDepartment)
 router.post('/addHistoryMoving',controller.addHistoryMoving)
-router.get('/showHistory/:id',controller.showHistory)
-router.get('/showComments/:id',controller.showComment)
+router.get('/showDetails/:id',controller.showDetails)
 router.post('/addComment',controller.addComment)
+router.delete('/deleteComment',controller.deleteComment)
 
 
 
